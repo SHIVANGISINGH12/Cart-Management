@@ -7,7 +7,7 @@
 }
 
 .leftContainer {
-  border: 4px solid rgb(93, 193, 226);
+  background-color: #f49090;
   width: 54%;
 }
 
@@ -86,7 +86,7 @@
 }
 
 .rightContainer {
-  border: 4px solid rgb(35, 130, 226);
+  background-color: rgba(250, 89, 116, 0.981);
   width: 40%;
 }
 
