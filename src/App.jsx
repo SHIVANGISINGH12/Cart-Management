@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 function App() {
@@ -11,6 +11,22 @@ function App() {
     ]);
 
     const [cartArray, setCartArray] = useState([]);
+
+    const [total, setTotal] = useState(0);
+
+    useEffect(() => {
+        if (cartArray.length === 0) {
+            setTotal(0);
+            return;
+        }
+
+        let totalPrice = 0;
+
+        cartArray.forEach((item) => {
+            totalPrice += item.quantity * item.price;
+        });
+        setTotal(totalPrice);
+    }, [cartArray]);
 
     function increment(id) {
         setProductsArray((prevProductsArray) =>
@@ -56,9 +72,13 @@ function App() {
         //If its quanity is 1 then make a new cart by not having that particular product, use filter function of array for that.
 
         setCartArray((prevCartArray) => {
-            const itemClicked = prevCartArray.find((item) => item.id === id);
+            const itemExists = prevCartArray.find((item) => item.id === id);
 
-            if (itemClicked && itemClicked.quantity > 1) {
+            if (!itemExists) {
+                return prevCartArray;
+            }
+
+            if (itemExists && itemExists.quantity > 1) {
                 return prevCartArray.map((item) =>
                     item.id === id
                         ? { ...item, quantity: item.quantity - 1 }
@@ -66,7 +86,7 @@ function App() {
                 );
             } else {
                 return prevCartArray.filter(
-                    (item) => item.id !== itemClicked.id
+                    (item) => item.id !== itemExists.id
                 );
             }
         });
@@ -75,7 +95,7 @@ function App() {
     const products = productsArray.map((product) => (
         <div className="product" key={product.id}>
             <p className="productName">{product.name}</p>
-            <p className="price">{product.price}</p>
+            <p className="price">${product.price}</p>
             <div className="buttonContainer">
                 <button
                     className="plus"
@@ -99,7 +119,7 @@ function App() {
     ));
 
     const cart = cartArray.map((item) => (
-        <div className="item">
+        <div className="item" key={item.id}>
             <p>{item.name}</p>
             <p>
                 {item.quantity} x {item.price}
@@ -119,7 +139,7 @@ function App() {
                     <div className="cartItems">{cart}</div>
                     <div className="total">
                         <p>Total:</p>
-                        <p>{total}</p>
+                        <p>${total}</p>
                     </div>
                 </div>
             </div>
@@ -136,7 +156,7 @@ Steps:
 3) Make changes to cart array:
    3.1) Increment: (i) Check whether the product exists or not, if it doesn't then add the product. --------------DONE------------
                    (ii) If the product already exists then increase just the quantity. ----------------DONE---------------------
-   3.2) Decrement: (i) If the product's quantity is 1 then remove it from the cart.
-                   (ii) If the product's quantity is more than 1 then just reduce it on each click.
+   3.2) Decrement: (i) If the product's quantity is 1 then remove it from the cart.-----------------DONE-----------------------
+                   (ii) If the product's quantity is more than 1 then just reduce it on each click.--------------DONE-------------
 4) Calculate the total value and render it.
 */

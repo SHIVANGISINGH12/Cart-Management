@@ -27,6 +27,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0rem .5rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
 .product .productName,
@@ -113,6 +114,8 @@
   justify-content: space-between;
   align-items: center;
   margin: .7rem 0rem;
+  animation: showItem 0.3s forwards;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
 .total {
@@ -124,4 +127,17 @@
   align-items: center;
   font-size: 1.3rem;
   padding: 0rem 0.8rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+@keyframes showItem {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
 }
