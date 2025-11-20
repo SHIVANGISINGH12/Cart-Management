@@ -10,23 +10,25 @@ function App() {
         { id: 5, name: "Product-5", price: 500, quantity: 0 },
     ]);
 
-    const [cartArray, setCartArray] = useState([]);
+    let cartArray = productsArray.filter((product) => product.quantity > 0);
 
     const [total, setTotal] = useState(0);
 
     useEffect(() => {
-        if (cartArray.length === 0) {
+        const newCart = productsArray.filter((product) => product.quantity > 0);
+        if (newCart.length === 0) {
             setTotal(0);
             return;
         }
 
         let totalPrice = 0;
 
-        cartArray.forEach((item) => {
+        newCart.forEach((item) => {
             totalPrice += item.quantity * item.price;
         });
+
         setTotal(totalPrice);
-    }, [cartArray]);
+    }, [productsArray]);
 
     function increment(id) {
         setProductsArray((prevProductsArray) =>
@@ -36,26 +38,6 @@ function App() {
                     : product
             )
         );
-
-        setCartArray((prevCartArray) => {
-            //check if the clicked product exists in the current cart
-            const itemExists = prevCartArray.find((item) => item.id === id);
-
-            //If Item does exist, then we will increase the quantity
-            if (itemExists) {
-                return prevCartArray.map((item) =>
-                    item.id === id
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
-                );
-            } else {
-                //If Item does not exist, then we will freshly add a new item by finding that item from product array and then adding quantity of 1
-                const product = productsArray.find(
-                    (product) => product.id === id
-                );
-                return [...prevCartArray, { ...product, quantity: 1 }];
-            }
-        });
     }
 
     function decrement(id) {
@@ -66,30 +48,6 @@ function App() {
                     : product
             )
         );
-
-        //Firstly check in the current cart whether the clicked product quantity is 1 or not, store that in a variable
-        //If it is 1: just map the cart by adding a quantity-1
-        //If its quanity is 1 then make a new cart by not having that particular product, use filter function of array for that.
-
-        setCartArray((prevCartArray) => {
-            const itemExists = prevCartArray.find((item) => item.id === id);
-
-            if (!itemExists) {
-                return prevCartArray;
-            }
-
-            if (itemExists && itemExists.quantity > 1) {
-                return prevCartArray.map((item) =>
-                    item.id === id
-                        ? { ...item, quantity: item.quantity - 1 }
-                        : item
-                );
-            } else {
-                return prevCartArray.filter(
-                    (item) => item.id !== itemExists.id
-                );
-            }
-        });
     }
 
     const products = productsArray.map((product) => (
@@ -148,6 +106,157 @@ function App() {
 }
 
 export default App;
+
+// import { useEffect, useState } from "react";
+// import "./App.css";
+
+// function App() {
+//     const [productsArray, setProductsArray] = useState([
+//         { id: 1, name: "Product-1", price: 100, quantity: 0 },
+//         { id: 2, name: "Product-2", price: 200, quantity: 0 },
+//         { id: 3, name: "Product-3", price: 300, quantity: 0 },
+//         { id: 4, name: "Product-4", price: 400, quantity: 0 },
+//         { id: 5, name: "Product-5", price: 500, quantity: 0 },
+//     ]);
+
+//     const [cartArray, setCartArray] = useState([]);
+
+//     const [total, setTotal] = useState(0);
+
+//     useEffect(() => {
+//         if (cartArray.length === 0) {
+//             setTotal(0);
+//             return;
+//         }
+
+//         let totalPrice = 0;
+
+//         cartArray.forEach((item) => {
+//             totalPrice += item.quantity * item.price;
+//         });
+//         setTotal(totalPrice);
+//     }, [cartArray]);
+
+//     function increment(id) {
+//         setProductsArray((prevProductsArray) =>
+//             prevProductsArray.map((product) =>
+//                 id === product.id
+//                     ? { ...product, quantity: product.quantity + 1 }
+//                     : product
+//             )
+//         );
+
+//         setCartArray((prevCartArray) => {
+//             //check if the clicked product exists in the current cart
+//             const itemExists = prevCartArray.find((item) => item.id === id);
+
+//             //If Item does exist, then we will increase the quantity
+//             if (itemExists) {
+//                 return prevCartArray.map((item) =>
+//                     item.id === id
+//                         ? { ...item, quantity: item.quantity + 1 }
+//                         : item
+//                 );
+//             } else {
+//                 //If Item does not exist, then we will freshly add a new item by finding that item from product array and then adding quantity of 1
+//                 const product = productsArray.find(
+//                     (product) => product.id === id
+//                 );
+//                 return [...prevCartArray, { ...product, quantity: 1 }];
+//             }
+//         });
+//     }
+
+//     function decrement(id) {
+//         setProductsArray((prevProductsArray) =>
+//             prevProductsArray.map((product) =>
+//                 product.id === id && product.quantity > 0
+//                     ? { ...product, quantity: product.quantity - 1 }
+//                     : product
+//             )
+//         );
+
+//         //Firstly check in the current cart whether the clicked product quantity is 1 or not, store that in a variable
+//         //If it is 1: just map the cart by adding a quantity-1
+//         //If its quanity is 1 then make a new cart by not having that particular product, use filter function of array for that.
+
+//         setCartArray((prevCartArray) => {
+//             const itemExists = prevCartArray.find((item) => item.id === id);
+
+//             if (!itemExists) {
+//                 return prevCartArray;
+//             }
+
+//             if (itemExists && itemExists.quantity > 1) {
+//                 return prevCartArray.map((item) =>
+//                     item.id === id
+//                         ? { ...item, quantity: item.quantity - 1 }
+//                         : item
+//                 );
+//             } else {
+//                 return prevCartArray.filter(
+//                     (item) => item.id !== itemExists.id
+//                 );
+//             }
+//         });
+//     }
+
+//     const products = productsArray.map((product) => (
+//         <div className="product" key={product.id}>
+//             <p className="productName">{product.name}</p>
+//             <p className="price">${product.price}</p>
+//             <div className="buttonContainer">
+//                 <button
+//                     className="plus"
+//                     onClick={() => {
+//                         increment(product.id);
+//                     }}
+//                 >
+//                     +
+//                 </button>
+//                 <p className="quantity">{product.quantity}</p>
+//                 <button
+//                     className="minus"
+//                     onClick={() => {
+//                         decrement(product.id);
+//                     }}
+//                 >
+//                     -
+//                 </button>
+//             </div>
+//         </div>
+//     ));
+
+//     const cart = cartArray.map((item) => (
+//         <div className="item" key={item.id}>
+//             <p>{item.name}</p>
+//             <p>
+//                 {item.quantity} x {item.price}
+//             </p>
+//         </div>
+//     ));
+
+//     return (
+//         <div className="container">
+//             <div className="leftContainer">
+//                 <h2>Products</h2>
+//                 <div className="productsContainer">{products}</div>
+//             </div>
+//             <div className="rightContainer">
+//                 <h2>Cart</h2>
+//                 <div className="cartContainer">
+//                     <div className="cartItems">{cart}</div>
+//                     <div className="total">
+//                         <p>Total:</p>
+//                         <p>${total}</p>
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// }
+
+// export default App;
 
 /*
 Steps:
